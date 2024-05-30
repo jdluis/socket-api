@@ -46,7 +46,7 @@ $ npm run start:prod
 ```
 
 ## Uses of API
-- [Repositorio de mi primer proyecto de IA](https://github.com/jdluis/myFirstAI)
+- [MyFirstAI](https://github.com/jdluis/myFirstAI)
 
 ## Test
 
