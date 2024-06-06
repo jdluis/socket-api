@@ -5,8 +5,15 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+
+interface MessageData {
+  userId: string;
+  message: string;
+}
 
 @WebSocketGateway({
   cors: {
@@ -20,9 +27,15 @@ export class WebsocketsGateway
 {
   @WebSocketServer() server: Server;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   afterInit(server: Server) {
     console.log('WebSocket Gateway initialized');
+
+    server.on('custom-event', (data) => {
+      console.log('Custom Event received:', data);
+    });
+
+    // Emit message to all clients
+    server.emit('initial-event', { message: 'WebSocket Gateway inicializado' });
   }
 
   handleConnection(client: Socket) {
@@ -34,8 +47,14 @@ export class WebsocketsGateway
   }
 
   @SubscribeMessage('messageToServer')
-  handleMessage(client: Socket, payload: any): void {
-    console.log(`Message from client ${client.id}: ${payload.payload.message}`);
-    client.broadcast.emit('messageToClient', payload); // Broadcast to all clients except the sender
+  handleMessage(
+    @MessageBody() data: MessageData,
+    @ConnectedSocket() client: Socket,
+  ): void {
+    console.log(data);
+    console.log(
+      `Message from client ${client.id} (${data.userId}): ${data.message}`,
+    );
+    this.server.emit('receive_message', data); // Broadcast to all clients
   }
 }
