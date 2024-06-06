@@ -45,6 +45,9 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Uses of API
+- [MyFirstAI](https://github.com/jdluis/myFirstAI)
+
 ## Test
 
 ```bash
